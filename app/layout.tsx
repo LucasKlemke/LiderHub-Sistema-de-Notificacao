@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { SidebarProvider } from '@/components/sidebar-provider';
+import { SidebarContextProvider } from '@/components/sidebar-context';
 import { QueryProvider } from '@/components/query-provider';
 
 const geistSans = Geist({
@@ -30,7 +31,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} dark antialiased`}
       >
         <QueryProvider>
-          <SidebarProvider>{children}</SidebarProvider>
+          <SidebarContextProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </SidebarContextProvider>
         </QueryProvider>
       </body>
     </html>

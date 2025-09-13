@@ -25,10 +25,7 @@ export async function GET(request: NextRequest) {
     // hoje tem que ser apos a data de scheduleat, para aparecer as notificacoes agendadas apos a data
 
     const where = {
-      OR: [
-        { userId: userId },
-        { userId: null }, // Mass notifications
-      ],
+      OR: [{ userId: userId }],
       AND: [
         {
           OR: [
@@ -41,38 +38,50 @@ export async function GET(request: NextRequest) {
       ...(readOnly && { isRead: true }),
     };
 
-    const [notifications, total, unreadCount] = await Promise.all([
-      prisma.notification.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit,
-        include: {
-          user: {
-            select: { id: true, name: true, email: true },
+    const [notifications, total, totalFiltered, unreadCount, readCount] =
+      await Promise.all([
+        prisma.notification.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: limit,
+          include: {
+            user: {
+              select: { id: true, name: true, email: true },
+            },
           },
-        },
-      }),
-      prisma.notification.count({ where }),
-      prisma.notification.count({
-        where: {
-          OR: [{ userId: userId }, { userId: null }],
-          isRead: false,
-        },
-      }),
-    ]);
-
-
+        }),
+        prisma.notification.count({
+          where: {
+            userId: userId,
+          },
+        }),
+        prisma.notification.count({ where }),
+        prisma.notification.count({
+          where: {
+            OR: [{ userId: userId }],
+            isRead: false,
+          },
+        }),
+        prisma.notification.count({
+          where: {
+            OR: [{ userId: userId }],
+            isRead: true,
+          },
+        }),
+      ]);
 
     return NextResponse.json({
       notifications,
       pagination: {
         page,
         limit,
-        total,
-        totalPages: Math.ceil(total / limit),
+        total: totalFiltered,
+        totalPages: Math.ceil(totalFiltered / limit),
       },
+      total,
       unreadCount,
+      readCount,
     });
   } catch (error) {
     console.error('Error fetching notifications:', error);

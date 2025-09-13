@@ -68,7 +68,7 @@ const markNotificationAsRead = async (
 
 const markAllNotificationsAsRead = async (userId: string): Promise<void> => {
   const response = await fetch('/api/notifications/bulk-read', {
-    method: 'POST',
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },

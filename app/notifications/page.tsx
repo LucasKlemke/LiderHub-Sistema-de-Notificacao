@@ -12,9 +12,10 @@ import { NotificationModal } from './components/notification-modal';
 import { NotificationTabs } from './components/notification-tabs';
 import { NotificationList } from './components/notification-list';
 import { Pagination } from './components/pagination';
+import Header from '@/components/header';
 
 const NotificationsDashboard = () => {
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('unread');
   const [selectedNotification, setSelectedNotification] =
     useState<Notification | null>(null);
   const [expandedNotifications, setExpandedNotifications] = useState(
@@ -47,6 +48,10 @@ const NotificationsDashboard = () => {
   const unreadCount = notificationsData?.unreadCount || 0;
   const totalPages = notificationsData?.pagination?.totalPages || 1;
   const totalNotifications = notificationsData?.pagination?.total || 0;
+
+  // Calculate read count based on total and unread
+  const readCount = Math.max(0, totalNotifications - unreadCount);
+  const total = totalNotifications;
 
   // Handle tab change - reset to page 1
   const handleTabChange = (tab: string) => {
@@ -101,7 +106,7 @@ const NotificationsDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen bg-[#1a1b23]">
       {selectedNotification && (
         <NotificationModal
           notification={selectedNotification}
@@ -111,35 +116,37 @@ const NotificationsDashboard = () => {
         />
       )}
 
-      <div className="mx-auto max-w-6xl px-6 py-8">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-semibold ">Notifications</h1>
-            {unreadCount > 0 && (
-              <Button
-                onClick={markAllAsRead}
-                disabled={markAllAsReadMutation.isPending}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Check className="h-4 w-4" />
-                {markAllAsReadMutation.isPending
-                  ? 'Marcando todas...'
-                  : `Marcar todas como lidas (${unreadCount})`}
-              </Button>
-            )}
-          </div>
-          <Button variant="ghost" size="icon">
-            <Settings className="h-6 w-6" />
-          </Button>
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        {/* Header - Responsive */}
+        <div className="mb-6 lg:mb-8">
+          <Header title="Notificações" />
         </div>
 
-        {/* Tabs */}
-        <NotificationTabs activeTab={activeTab} onTabChange={handleTabChange} />
+        {/* Tabs - Mobile Responsive */}
+        <NotificationTabs
+          activeTab={activeTab}
+          totalNotifications={total}
+          unreadCount={unreadCount}
+          readCount={readCount}
+          onTabChange={handleTabChange}
+        />
 
-        {/* Notifications List */}
+        {/* Mark All as Read Button - Responsive */}
+        {!loading && unreadCount > 0 && activeTab === 'unread' && (
+          <div className="mb-4 sm:mb-6">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={markAllAsRead}
+              className="w-full border-neutral-600 bg-transparent text-neutral-200 hover:bg-neutral-800 hover:text-white sm:w-auto"
+            >
+              <Check className="mr-2 h-4 w-4" />
+              Marcar todas como lidas
+            </Button>
+          </div>
+        )}
+
+        {/* Notifications List - Responsive Container */}
         <NotificationList
           notifications={filteredNotifications}
           isLoading={loading}
@@ -151,8 +158,8 @@ const NotificationsDashboard = () => {
           isMarkingAsRead={markAsReadMutation.isPending}
         />
 
-        {/* Pagination */}
-        {!loading && (
+        {/* Pagination - Responsive */}
+        {totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

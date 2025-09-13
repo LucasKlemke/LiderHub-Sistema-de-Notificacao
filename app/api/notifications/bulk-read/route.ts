@@ -5,7 +5,7 @@ import { prisma } from '@/lib/db';
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    const { userId, notificationIds } = body;
+    const { userId } = body;
 
     if (!userId) {
       return NextResponse.json(
@@ -14,19 +14,11 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const where =
-      notificationIds && notificationIds.length > 0
-        ? {
-            id: { in: notificationIds },
-            OR: [{ userId: userId }, { userId: null }],
-          }
-        : {
-            OR: [{ userId: userId }, { userId: null }],
-            isRead: false,
-          };
-
     const result = await prisma.notification.updateMany({
-      where,
+      where: {
+        userId,
+        isRead: false,
+      },
       data: {
         isRead: true,
         updatedAt: new Date(),

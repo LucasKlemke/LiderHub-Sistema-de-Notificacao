@@ -45,7 +45,7 @@ export function DatePicker({
   const handleDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
     setIsDateOpen(false);
-    
+
     if (selectedDate) {
       // Combine selected date with current time
       const [hours, minutes] = time.split(':').map(Number);
@@ -60,7 +60,7 @@ export function DatePicker({
   // Handle time change
   const handleTimeChange = (newTime: string) => {
     setTime(newTime);
-    
+
     if (date) {
       // Combine current date with new time
       const [hours, minutes] = newTime.split(':').map(Number);
@@ -71,25 +71,37 @@ export function DatePicker({
   };
 
   return (
-    <div>
-      <Label className="mb-3 block text-sm font-medium">
+    <div className="space-y-3">
+      <Label className="text-sm font-medium text-neutral-200 sm:text-base">
         Agendar notificação
       </Label>
-      <RadioGroup value={shouldSchedule} onValueChange={onScheduleChange}>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="no" id="no-schedule" />
+      <RadioGroup
+        value={shouldSchedule}
+        onValueChange={onScheduleChange}
+        className="space-y-3"
+      >
+        <div className="flex items-center space-x-3">
+          <RadioGroupItem
+            value="no"
+            id="no-schedule"
+            className="border-neutral-600 text-blue-500 focus:ring-blue-500"
+          />
           <Label
             htmlFor="no-schedule"
-            className="cursor-pointer text-sm font-medium"
+            className="cursor-pointer text-sm font-medium text-neutral-200 sm:text-base"
           >
             Não, enviar agora
           </Label>
         </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="yes" id="yes-schedule" />
+        <div className="flex items-center space-x-3">
+          <RadioGroupItem
+            value="yes"
+            id="yes-schedule"
+            className="border-neutral-600 text-blue-500 focus:ring-blue-500"
+          />
           <Label
             htmlFor="yes-schedule"
-            className="cursor-pointer text-sm font-medium"
+            className="cursor-pointer text-sm font-medium text-neutral-200 sm:text-base"
           >
             Sim, agendar para uma data específica
           </Label>
@@ -97,9 +109,12 @@ export function DatePicker({
       </RadioGroup>
 
       {shouldSchedule === 'yes' && (
-        <div className="mt-4 flex gap-4">
-          <div className="flex flex-col gap-3">
-            <Label htmlFor="date-picker" className="px-1">
+        <div className="mt-4 space-y-4 sm:flex sm:gap-4 sm:space-y-0">
+          <div className="flex-1 space-y-2">
+            <Label
+              htmlFor="date-picker"
+              className="text-sm font-medium text-neutral-200"
+            >
               Data
             </Label>
             <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
@@ -107,18 +122,22 @@ export function DatePicker({
                 <Button
                   variant="outline"
                   id="date-picker"
-                  className="w-48 justify-between font-normal"
+                  className="h-10 w-full justify-between border-neutral-600 bg-neutral-800 text-white hover:bg-neutral-700 focus:border-blue-500 focus:ring-blue-500 sm:h-11 sm:w-48"
                 >
                   {date ? date.toLocaleDateString('pt-BR') : 'Selecionar data'}
                   <ChevronDownIcon className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+              <PopoverContent
+                className="w-auto overflow-hidden border-neutral-600 bg-neutral-800 p-0"
+                align="start"
+              >
                 <Calendar
                   mode="single"
                   selected={date}
                   captionLayout="dropdown"
                   onSelect={handleDateSelect}
+                  className="bg-neutral-800 text-white"
                   disabled={date => {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
@@ -128,8 +147,11 @@ export function DatePicker({
               </PopoverContent>
             </Popover>
           </div>
-          <div className="flex flex-col gap-3">
-            <Label htmlFor="time-picker" className="px-1">
+          <div className="flex-1 space-y-2 sm:w-32 sm:flex-none">
+            <Label
+              htmlFor="time-picker"
+              className="text-sm font-medium text-neutral-200"
+            >
               Hora
             </Label>
             <Input
@@ -138,7 +160,7 @@ export function DatePicker({
               step="60"
               value={time}
               onChange={e => handleTimeChange(e.target.value)}
-              className="w-32 bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              className="h-10 w-full border-neutral-600 bg-neutral-800 text-white focus:border-blue-500 focus:ring-blue-500 sm:h-11 sm:w-32 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
             />
           </div>
         </div>

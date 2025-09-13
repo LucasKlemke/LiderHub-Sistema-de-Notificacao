@@ -9,6 +9,7 @@ import {
   type SchedulerStatusType,
   type NotificationFormType,
 } from './components';
+import Header from '@/components/header';
 
 const NotificationSimulator = () => {
   const [activeTab, setActiveTab] = useState('create');
@@ -16,7 +17,7 @@ const NotificationSimulator = () => {
     useState<SchedulerStatusType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  
+
   // React Query mutation for creating notifications
   const createNotificationMutation = useCreateNotificationMutation();
 
@@ -84,9 +85,10 @@ const NotificationSimulator = () => {
         shouldSchedule: 'no',
         scheduledDate: undefined,
       });
-      
     } catch (error) {
-      setMessage(`Erro: ${error instanceof Error ? error.message : 'Erro ao criar notificação'}`);
+      setMessage(
+        `Erro: ${error instanceof Error ? error.message : 'Erro ao criar notificação'}`
+      );
       console.error('Error creating notification:', error);
     }
 
@@ -109,91 +111,39 @@ const NotificationSimulator = () => {
     }
   };
 
-  // Função para iniciar o scheduler
-  const handleStartScheduler = async () => {
-    try {
-      const response = await fetch('/api/scheduler/start', {
-        method: 'POST',
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setMessage('Scheduler iniciado com sucesso!');
-        checkSchedulerStatus();
-      } else {
-        setMessage(`Erro: ${data.error}`);
-      }
-    } catch (error) {
-      setMessage('Erro ao iniciar scheduler');
-    }
-  };
-
-  // Função para enviar notificações agendadas
-  const handleSendScheduled = async () => {
-    try {
-      const response = await fetch('/api/notifications/scheduled', {
-        method: 'POST',
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setMessage(`${data.count} notificações agendadas enviadas!`);
-      } else {
-        setMessage(`Erro: ${data.error}`);
-      }
-    } catch (error) {
-      setMessage('Erro ao enviar notificações agendadas');
-    }
-  };
-
-  const tabs = [
-    { key: 'create', label: 'Criar Notificação' },
-    { key: 'schedule', label: 'Agendamento' },
-  ];
+  const tabs = [{ key: 'create', label: 'Criar Notificação' }];
 
   return (
-    <div className="min-h-screen ">
-      <div className="mx-auto max-w-6xl px-6 py-8">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-semibold ">Simular Notificações</h1>
-            {schedulerStatus && (
-              <Badge
-                variant={
-                  schedulerStatus.scheduler.running ? 'default' : 'secondary'
-                }
-              >
-                Scheduler:{' '}
-                {schedulerStatus.scheduler.running ? 'Ativo' : 'Inativo'}
-              </Badge>
-            )}
-          </div>
-          <SchedulerControls
-            onStartScheduler={handleStartScheduler}
-            onSendScheduled={handleSendScheduled}
-            isLoading={isLoading}
-          />
+    <div className="min-h-screen bg-[#1a1b23]">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        {/* Header - Responsive */}
+        <div className="mb-6 lg:mb-8">
+          <Header title="Simular Notificações" />
         </div>
 
-        {/* Message */}
+        {/* Message - Responsive */}
         {message && (
-          <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <p className="text-blue-800">{message}</p>
+          <div className="mb-4 rounded-lg border border-blue-200/20 bg-blue-900/20 p-3 sm:mb-6 sm:p-4">
+            <p className="text-sm text-blue-200 sm:text-base">{message}</p>
           </div>
         )}
 
-        {/* Tabs */}
-
-        <div className="mb-8  border-b">
-          <nav className="-mb-px flex space-x-8">
+        {/* Tabs - Mobile Responsive */}
+        <div className="mb-6 border-b border-neutral-700 lg:mb-8">
+          <nav className="-mb-px flex">
             {tabs.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`cursor-pointer border-b-2 px-1 py-3 text-sm font-medium transition-colors ${
-                  activeTab === key
-                    ? 'border-primary text-primary'
-                    : 'text-muted-foreground hover:text-muted-foreground/80 border-transparent'
-                }`}
+                className={`
+                  flex-1 border-b-2 px-3 py-3 text-center text-sm font-medium transition-colors
+                  sm:flex-none sm:px-6 sm:text-base
+                  ${
+                    activeTab === key
+                      ? 'border-blue-500 text-blue-400'
+                      : 'border-transparent text-neutral-400 hover:border-neutral-600 hover:text-neutral-300'
+                  }
+                `}
               >
                 {label}
               </button>
@@ -201,10 +151,10 @@ const NotificationSimulator = () => {
           </nav>
         </div>
 
-        {/* Content */}
-        <div className=" rounded-lg border shadow-sm">
+        {/* Content - Responsive Container */}
+        <div className="rounded-lg border border-neutral-700 bg-[#1e1f28] shadow-xl">
           {activeTab === 'create' && (
-            <div className="p-6">
+            <div className="p-4 sm:p-6 lg:p-8">
               <NotificationForm
                 form={form}
                 onFormChange={setForm}
@@ -215,7 +165,7 @@ const NotificationSimulator = () => {
           )}
 
           {activeTab === 'schedule' && (
-            <div className="p-6">
+            <div className="p-4 sm:p-6 lg:p-8">
               <SchedulerStatus
                 schedulerStatus={schedulerStatus}
                 isLoading={false}
