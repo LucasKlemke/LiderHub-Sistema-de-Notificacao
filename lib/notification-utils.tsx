@@ -4,7 +4,6 @@ import {
   CheckCircle,
   AlertTriangle,
   AlertCircle,
-  Megaphone,
   Settings,
   Info,
 } from 'lucide-react';
@@ -16,12 +15,10 @@ export const getNotificationIcon = (type: NotificationType) => {
   switch (type) {
     case NotificationType.MENTION:
       return <CheckCircle className="h-5 w-5 text-green-500" />;
-    case NotificationType.TICKET:
+    case NotificationType.SUPPORT:
       return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
     case NotificationType.PLAN_EXPIRY:
       return <AlertCircle className="h-5 w-5 text-red-500" />;
-    case NotificationType.CAMPAIGN:
-      return <Megaphone className="h-5 w-5 text-blue-500" />;
     case NotificationType.SYSTEM:
       return <Settings className="h-5 w-5 text-blue-500" />;
     default:
@@ -52,11 +49,9 @@ export const getTypeLabel = (type: NotificationType) => {
     case NotificationType.MENTION:
       return 'Menção';
     case NotificationType.SUPPORT:
-      return 'Ticket';
+      return 'Suporte';
     case NotificationType.PLAN_EXPIRY:
       return 'Plano';
-    case NotificationType.CAMPAIGN:
-      return 'Campanha';
     case NotificationType.SYSTEM:
       return 'Sistema';
     default:

@@ -1,38 +1,24 @@
 'use client';
 import React, { useState } from 'react';
 import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/sidebar';
-import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-  IconLink,
-  IconHeadset,
-  IconMessages,
-  IconAddressBook,
-  IconLayoutKanban,
-  IconRobot,
-  IconChevronRight,
-  IconChevronDown,
-} from '@tabler/icons-react';
-import { motion } from 'motion/react';
+import { IconChevronDown } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { Bell } from 'lucide-react';
-import { NotificationBell } from './notification-bell';
+import { BellIcon, TestTube2 } from 'lucide-react';
+import NotificationIcon from './notification-icon';
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   const links = [
     {
-      label: 'Dashboard',
-      href: '/dashboard',
-      icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-300" />,
+      label: 'Notificações',
+      href: '/notifications',
+      icon: <NotificationIcon  />,
     },
     {
       label: 'Simulação',
       href: '/simulation',
-      icon: <IconLink className="h-5 w-5 shrink-0 text-neutral-300" />,
+      icon: <TestTube2 className="h-5 w-5 shrink-0 text-neutral-300" />,
     },
   ];
   return (

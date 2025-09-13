@@ -67,26 +67,31 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
             >
               {notification.title}
             </p>
+            <p
+              className={`text-sm font-medium text-muted-foreground truncate max-w-[500px]`}
+            >
+              {notification.message}
+            </p>
 
             {/* User info */}
             <div className="mt-1 flex items-center gap-2">
-              {notification.user && (
+              {notification.userId && (
                 <>
                   <div className="flex items-center gap-2">
                     <span
                       className={`text-muted-foreground text-sm font-medium  `}
                     >
-                      Para {notification.user.name || 'Unknown User'}
+                      Para {notification.user?.name || 'Unknown User'}
                     </span>
                   </div>
                   <span className="text-muted-foreground text-sm">
-                    {formatTime(new Date(notification.createdAt))}
+                    {formatTime(new Date(notification.scheduledAt ||notification.sentAt || notification.createdAt))}
                   </span>
                 </>
               )}
               {!notification.user && (
                 <span className="text-muted-foreground text-sm">
-                  {formatTime(new Date(notification.createdAt))}
+                  {formatTime(new Date(notification.scheduledAt ||notification.sentAt || notification.createdAt))}
                 </span>
               )}
             </div>

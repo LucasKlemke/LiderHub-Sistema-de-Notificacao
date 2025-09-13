@@ -24,6 +24,7 @@ interface NotificationsParams {
   page?: number;
   limit?: number;
   unreadOnly?: boolean;
+  readOnly?: boolean;
 }
 
 // API functions
@@ -36,8 +37,12 @@ const fetchNotifications = async (
     limit: params.limit?.toString() || '10',
   });
 
-  if (params.unreadOnly) {
+  if (params.unreadOnly && !params.readOnly) {
     searchParams.append('unreadOnly', 'true');
+  }
+
+  if (params.readOnly && !params.unreadOnly) {
+    searchParams.append('readOnly', 'true');
   }
 
   const response = await fetch(`/api/notifications?${searchParams.toString()}`);
@@ -73,6 +78,30 @@ const markAllNotificationsAsRead = async (userId: string): Promise<void> => {
   if (!response.ok) {
     throw new Error('Failed to mark all notifications as read');
   }
+};
+
+const createNotification = async (payload: {
+  title: string;
+  description: string;
+  type: string;
+  targetType: 'all' | 'specific';
+  userId?: string;
+  scheduledDate?: string;
+}): Promise<any> => {
+  const response = await fetch('/api/notifications', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to create notification');
+  }
+
+  return response.json();
 };
 
 // React Query hooks
@@ -139,6 +168,18 @@ export const useMarkAllAsReadMutation = () => {
           };
         }
       );
+    },
+  });
+};
+
+export const useCreateNotificationMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createNotification,
+    onSuccess: () => {
+      // Invalidate all notification queries to refresh the cache
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
     },
   });
 };

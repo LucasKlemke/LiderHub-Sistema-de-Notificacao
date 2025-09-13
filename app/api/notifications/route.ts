@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
     const page = Number.parseInt(searchParams.get('page') || '1');
     const limit = Number.parseInt(searchParams.get('limit') || '10');
     const unreadOnly = searchParams.get('unreadOnly') === 'true';
+    const readOnly = searchParams.get('readOnly') === 'true';
 
     if (!userId) {
       return NextResponse.json(
@@ -19,15 +20,28 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
+    const now = new Date();
+
+    // hoje tem que ser apos a data de scheduleat, para aparecer as notificacoes agendadas apos a data
+
     const where = {
       OR: [
         { userId: userId },
         { userId: null }, // Mass notifications
       ],
+      AND: [
+        {
+          OR: [
+            { scheduledAt: null }, // Immediate notifications
+            { scheduledAt: { lte: now } }, // Scheduled notifications that should be shown now
+          ],
+        },
+      ],
       ...(unreadOnly && { isRead: false }),
+      ...(readOnly && { isRead: true }),
     };
 
-    const [notifications, total] = await Promise.all([
+    const [notifications, total, unreadCount] = await Promise.all([
       prisma.notification.findMany({
         where,
         orderBy: { createdAt: 'desc' },
@@ -40,14 +54,15 @@ export async function GET(request: NextRequest) {
         },
       }),
       prisma.notification.count({ where }),
+      prisma.notification.count({
+        where: {
+          OR: [{ userId: userId }, { userId: null }],
+          isRead: false,
+        },
+      }),
     ]);
 
-    const unreadCount = await prisma.notification.count({
-      where: {
-        OR: [{ userId: userId }, { userId: null }],
-        isRead: false,
-      },
-    });
+
 
     return NextResponse.json({
       notifications,
@@ -68,28 +83,74 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/notifications - Create a new notification
+// POST /api/notifications - Create a new notification (simplified endpoint)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, message, type, userId, scheduledAt, metadata } = body;
+    const {
+      title,
+      description, // Aceita 'description' como alias para 'message'
+      message,
+      type,
+      userId,
+      targetType = 'all', // 'all' para notificação em massa, 'specific' para usuário específico
+      scheduledAt,
+      scheduledDate, // Aceita tanto scheduledAt quanto scheduledDate
+      metadata,
+    } = body;
 
-    if (!title || !message || !type) {
+    // Usar description como message se fornecido
+    const notificationMessage = description || message;
+
+    if (!title || !notificationMessage || !type) {
       return NextResponse.json(
-        { error: 'title, message, and type are required' },
+        { error: 'title, description (or message), and type are required' },
         { status: 400 }
       );
+    }
+
+    // Determinar data de agendamento
+    let scheduledDateTime = null;
+    if (scheduledAt) {
+      scheduledDateTime = new Date(scheduledAt);
+    } else if (scheduledDate) {
+      scheduledDateTime = new Date(scheduledDate);
+    }
+
+    // Determinar userId final baseado no targetType
+    let finalUserId = null;
+    if (targetType === 'specific' && userId) {
+      finalUserId = userId;
+    }
+    // Se targetType === 'all', userId permanece null (notificação em massa)
+
+    // Criar metadata baseado no tipo se não fornecido
+    let finalMetadata = metadata;
+    if (!finalMetadata) {
+      const defaultLinks = {
+        CAMPAIGN: '/campaigns',
+        MENTION: '/notifications',
+        PLAN_EXPIRY: '/billing',
+        TICKET: '/tickets',
+      };
+
+      finalMetadata = {
+        link:
+          defaultLinks[type as keyof typeof defaultLinks] || '/notifications',
+        createdBy: 'user',
+        targetType,
+      };
     }
 
     const notification = await prisma.notification.create({
       data: {
         title,
-        message,
+        message: notificationMessage,
         type,
-        userId: userId || null,
-        scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
-        sentAt: scheduledAt ? null : new Date(),
-        metadata: metadata || null,
+        userId: finalUserId,
+        scheduledAt: scheduledDateTime,
+        sentAt: scheduledDateTime ? null : new Date(), // Se agendado, não marcar como enviado ainda
+        metadata: finalMetadata,
       },
       include: {
         user: {
@@ -98,7 +159,18 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(notification, { status: 201 });
+    const responseMessage = scheduledDateTime
+      ? `Notificação agendada para ${scheduledDateTime.toLocaleString('pt-BR')}`
+      : 'Notificação criada e enviada com sucesso';
+
+    return NextResponse.json(
+      {
+        ...notification,
+        message: responseMessage,
+        isScheduled: !!scheduledDateTime,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error creating notification:', error);
     return NextResponse.json(

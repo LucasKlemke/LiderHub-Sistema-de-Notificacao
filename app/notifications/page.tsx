@@ -35,6 +35,7 @@ const NotificationsDashboard = () => {
     userId: 'user1',
     page: currentPage,
     limit: itemsPerPage,
+    readOnly: activeTab === 'read',
     unreadOnly: activeTab === 'unread',
   });
 
