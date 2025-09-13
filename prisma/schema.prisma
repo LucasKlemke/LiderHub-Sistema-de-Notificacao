@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  title       String
+  message     String
+  type        NotificationType
+  isRead      Boolean          @default(false)
+  userId      String? // null for mass notifications
+  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scheduledAt DateTime? // for scheduled notifications
+  sentAt      DateTime? // when it was actually sent
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  metadata    Json? // additional data like links, actions, etc.
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  MENTION // User mentions and tags in comments or posts
+  PLAN_EXPIRY // Subscription plan expiration warnings and reminders
+  SUPPORT // Support ticket updates and customer service notifications
+  SYSTEM // System announcements, maintenance alerts, and feature updates
+}
