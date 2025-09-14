@@ -31,9 +31,9 @@ export const Pagination: React.FC<PaginationProps> = ({
       {/* Mobile Layout */}
       <div className="block sm:hidden">
         <div className="mb-4 text-center">
-          <span className="text-sm text-neutral-400">
+          {/* <span className="text-sm text-neutral-400">
             {startItem}-{endItem} de {totalItems}
-          </span>
+          </span> */}
         </div>
         <div className="flex justify-between gap-2">
           <Button
@@ -67,9 +67,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         <div className="flex items-center text-sm text-neutral-400">
           <span>
             Mostrando{' '}
-            <span className="font-medium text-neutral-200">{startItem}</span>{' '}
-            até <span className="font-medium text-neutral-200">{endItem}</span>{' '}
-            de{' '}
+            <span className="font-medium text-neutral-200">{endItem}</span> de{' '}
             <span className="font-medium text-neutral-200">{totalItems}</span>{' '}
             resultados
           </span>

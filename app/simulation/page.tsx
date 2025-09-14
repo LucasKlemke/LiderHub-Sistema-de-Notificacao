@@ -1,10 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Badge } from '@/components/ui/badge';
 import { useCreateNotificationMutation } from '@/lib/hooks/useNotifications';
 import {
   NotificationForm,
-  SchedulerControls,
   SchedulerStatus,
   type SchedulerStatusType,
   type NotificationFormType,
@@ -152,27 +150,26 @@ const NotificationSimulator = () => {
         </div>
 
         {/* Content - Responsive Container */}
-        <div className="rounded-lg border border-neutral-700 bg-[#1e1f28] shadow-xl">
-          {activeTab === 'create' && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <NotificationForm
-                form={form}
-                onFormChange={setForm}
-                onSubmit={handleSubmit}
-                isLoading={isLoading}
-              />
-            </div>
-          )}
 
-          {activeTab === 'schedule' && (
-            <div className="p-4 sm:p-6 lg:p-8">
-              <SchedulerStatus
-                schedulerStatus={schedulerStatus}
-                isLoading={false}
-              />
-            </div>
-          )}
-        </div>
+        {activeTab === 'create' && (
+          <div className="p-4 sm:p-6 lg:p-8">
+            <NotificationForm
+              form={form}
+              onFormChange={setForm}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
+
+        {activeTab === 'schedule' && (
+          <div className="p-4 sm:p-6 lg:p-8">
+            <SchedulerStatus
+              schedulerStatus={schedulerStatus}
+              isLoading={false}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

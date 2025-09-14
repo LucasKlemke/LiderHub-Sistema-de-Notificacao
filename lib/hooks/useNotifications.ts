@@ -1,5 +1,10 @@
-import { Notification } from '@prisma/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Notification, User } from '@prisma/client';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from '@tanstack/react-query';
 
 // Types
 interface NotificationUser {
@@ -7,17 +12,24 @@ interface NotificationUser {
   name: string;
   email: string;
 }
+// -----------------------------
 
 interface NotificationsResponse {
-  notifications: Notification[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+  notifications: (Notification & { user: User })[];
+  pagination: Pagination;
+  total: number;
   unreadCount: number;
+  readCount: number;
 }
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// ---------------------------------
 
 interface NotificationsParams {
   userId: string;
@@ -110,6 +122,7 @@ export const useNotifications = (params: NotificationsParams) => {
     queryKey: ['notifications', params],
     queryFn: () => fetchNotifications(params),
     enabled: !!params.userId,
+    placeholderData: keepPreviousData,
   });
 };
 

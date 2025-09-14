@@ -3,19 +3,15 @@ import React from 'react';
 import { Bell, AlertCircle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Notification } from '@/lib/hooks/useNotifications';
 import { NotificationItem } from './notification-item';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Notification, User } from '@prisma/client';
 
 interface NotificationListProps {
-  notifications: Notification[];
+  notifications: (Notification & { user: User })[];
   isLoading: boolean;
   isError: boolean;
   error?: Error | null;
-  expandedNotifications: Set<string>;
-  onToggleExpansion: (id: string) => void;
-  onMarkAsRead: (id: string) => void;
-  isMarkingAsRead?: boolean;
 }
 
 export const NotificationList: React.FC<NotificationListProps> = ({
@@ -23,10 +19,6 @@ export const NotificationList: React.FC<NotificationListProps> = ({
   isLoading,
   isError,
   error,
-  expandedNotifications,
-  onToggleExpansion,
-  onMarkAsRead,
-  isMarkingAsRead = false,
 }) => {
   // Loading skeleton
   if (isLoading) {
@@ -88,21 +80,17 @@ export const NotificationList: React.FC<NotificationListProps> = ({
 
   // Notifications list
   return (
-    <div className="max-h-[70vh] overflow-y-auto sm:max-h-[calc(100vh-300px)]">
+    <ScrollArea className="h-[70vh]  sm:h-[calc(100vh-300px)]">
       <div className="p-3 sm:p-4">
         <ul className="flex flex-col gap-2 sm:gap-3">
           {notifications.map(notification => (
             <NotificationItem
               key={notification.id}
               notification={notification}
-              isExpanded={expandedNotifications.has(notification.id)}
-              onToggleExpansion={onToggleExpansion}
-              onMarkAsRead={onMarkAsRead}
-              isMarkingAsRead={isMarkingAsRead}
             />
           ))}
         </ul>
       </div>
-    </div>
+    </ScrollArea>
   );
 };

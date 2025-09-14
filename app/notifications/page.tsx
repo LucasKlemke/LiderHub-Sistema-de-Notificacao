@@ -1,30 +1,25 @@
 'use client';
 import React, { useState } from 'react';
-import { Check, Settings } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   useNotifications,
-  useMarkAsReadMutation,
   useMarkAllAsReadMutation,
-  type Notification,
 } from '@/lib/hooks/useNotifications';
-import { NotificationModal } from './components/notification-modal';
 import { NotificationTabs } from './components/notification-tabs';
 import { NotificationList } from './components/notification-list';
 import { Pagination } from './components/pagination';
 import Header from '@/components/header';
+import { useWindowSize } from 'usehooks-ts';
 
 const NotificationsDashboard = () => {
   const [activeTab, setActiveTab] = useState('unread');
-  const [selectedNotification, setSelectedNotification] =
-    useState<Notification | null>(null);
-  const [expandedNotifications, setExpandedNotifications] = useState(
-    new Set<string>()
-  );
 
+  const { width } = useWindowSize();
+  const isMobile = width < 768;
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Fixed items per page
+  const [itemsPerPage] = useState(isMobile ? 5 : 10); // Fixed items per page
 
   // React Query hooks
   const {
@@ -40,7 +35,6 @@ const NotificationsDashboard = () => {
     unreadOnly: activeTab === 'unread',
   });
 
-  const markAsReadMutation = useMarkAsReadMutation();
   const markAllAsReadMutation = useMarkAllAsReadMutation();
 
   // Extract data from React Query response
@@ -50,7 +44,7 @@ const NotificationsDashboard = () => {
   const totalNotifications = notificationsData?.pagination?.total || 0;
 
   // Calculate read count based on total and unread
-  const readCount = Math.max(0, totalNotifications - unreadCount);
+  const readCount = notificationsData?.readCount || 0;
   const total = totalNotifications;
 
   // Handle tab change - reset to page 1
@@ -79,14 +73,6 @@ const NotificationsDashboard = () => {
     }
   };
 
-  const markAsRead = (id: string) => {
-    markAsReadMutation.mutate(id, {
-      onError: error => {
-        console.error('Error marking notification as read:', error);
-      },
-    });
-  };
-
   const markAllAsRead = () => {
     markAllAsReadMutation.mutate('user1', {
       onError: error => {
@@ -95,27 +81,8 @@ const NotificationsDashboard = () => {
     });
   };
 
-  const toggleNotificationExpansion = (notificationId: string) => {
-    const newExpanded = new Set(expandedNotifications);
-    if (newExpanded.has(notificationId)) {
-      newExpanded.delete(notificationId);
-    } else {
-      newExpanded.add(notificationId);
-    }
-    setExpandedNotifications(newExpanded);
-  };
-
   return (
     <div className="min-h-screen bg-[#1a1b23]">
-      {selectedNotification && (
-        <NotificationModal
-          notification={selectedNotification}
-          onClose={() => setSelectedNotification(null)}
-          onMarkAsRead={markAsRead}
-          isMarkingAsRead={markAsReadMutation.isPending}
-        />
-      )}
-
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         {/* Header - Responsive */}
         <div className="mb-6 lg:mb-8">
@@ -152,10 +119,6 @@ const NotificationsDashboard = () => {
           isLoading={loading}
           isError={isError}
           error={error}
-          expandedNotifications={expandedNotifications}
-          onToggleExpansion={toggleNotificationExpansion}
-          onMarkAsRead={markAsRead}
-          isMarkingAsRead={markAsReadMutation.isPending}
         />
 
         {/* Pagination - Responsive */}

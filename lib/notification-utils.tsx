@@ -8,23 +8,6 @@ import {
   Info,
 } from 'lucide-react';
 
-/**
- * Get the appropriate icon for a notification type
- */
-export const getNotificationIcon = (type: NotificationType) => {
-  switch (type) {
-    case NotificationType.MENTION:
-      return <CheckCircle className="h-5 w-5 text-green-500" />;
-    case NotificationType.SUPPORT:
-      return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
-    case NotificationType.PLAN_EXPIRY:
-      return <AlertCircle className="h-5 w-5 text-red-500" />;
-    case NotificationType.SYSTEM:
-      return <Settings className="h-5 w-5 text-blue-500" />;
-    default:
-      return <Info className="h-5 w-5 text-blue-500" />;
-  }
-};
 
 /**
  * Format time relative to now (e.g., "2h ago", "5m ago")

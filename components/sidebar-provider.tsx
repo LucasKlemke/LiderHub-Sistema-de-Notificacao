@@ -8,6 +8,7 @@ import NotificationIcon from './notification-icon';
 import { useWindowSize } from 'usehooks-ts';
 import { Button } from './ui/button';
 import { useMobileSidebar } from './sidebar-context';
+import Link from 'next/link';
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const { open, setOpen } = useMobileSidebar();
@@ -95,10 +96,10 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
                 {/* Navigation links with improved touch targets */}
                 <nav className="flex flex-col gap-2">
                   {links.map((link, idx) => (
-                    <a
+                    <Link
                       key={idx}
+                      onClick={isMobile ? () => setOpen(false) : undefined}
                       href={link.href}
-                      onClick={() => setOpen(false)}
                       className={cn(
                         'flex items-center gap-3 rounded-lg px-3 py-3',
                         'text-neutral-200 transition-all duration-200',
@@ -117,7 +118,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
                       >
                         {link.label}
                       </span>
-                    </a>
+                    </Link>
                   ))}
                 </nav>
               </div>
@@ -261,7 +262,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 }
 export const Logo = ({ open }: { open: boolean }) => {
   return (
-    <a
+    <Link
       href="#"
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal"
     >
@@ -281,16 +282,16 @@ export const Logo = ({ open }: { open: boolean }) => {
           <span className="text-muted-foreground text-xs">Backed by YC</span>
         </div>
       )}
-    </a>
+    </Link>
   );
 };
 
 export const LogoIcon = () => {
   return (
-    <a href="#" className="relative z-20 flex items-center justify-center py-1">
+    <Link href="#" className="relative z-20 flex items-center justify-center py-1">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600">
         <div className="h-4 w-4 rotate-45 transform rounded-sm bg-white" />
       </div>
-    </a>
+    </Link>
   );
 };

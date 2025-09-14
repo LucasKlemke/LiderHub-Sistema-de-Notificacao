@@ -126,13 +126,6 @@ export async function POST(request: NextRequest) {
       scheduledDateTime = new Date(scheduledDate);
     }
 
-    // Determinar userId final baseado no targetType
-    let finalUserId = null;
-    if (targetType === 'specific' && userId) {
-      finalUserId = userId;
-    }
-    // Se targetType === 'all', userId permanece null (notificação em massa)
-
     // Criar metadata baseado no tipo se não fornecido
     let finalMetadata = metadata;
     if (!finalMetadata) {
@@ -151,32 +144,79 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    const notification = await prisma.notification.create({
-      data: {
-        title,
-        message: notificationMessage,
-        type,
-        userId: finalUserId,
-        scheduledAt: scheduledDateTime,
-        sentAt: scheduledDateTime ? null : new Date(), // Se agendado, não marcar como enviado ainda
-        metadata: finalMetadata,
-      },
-      include: {
-        user: {
-          select: { id: true, name: true, email: true },
+    // Se targetType for 'specific' e userId for fornecido, criar para usuário específico
+    if (targetType === 'specific' && userId) {
+      const notification = await prisma.notification.create({
+        data: {
+          title,
+          message: notificationMessage,
+          type,
+          userId: userId,
+          scheduledAt: scheduledDateTime,
+          sentAt: scheduledDateTime ? null : new Date(),
+          metadata: finalMetadata,
         },
-      },
+        include: {
+          user: {
+            select: { id: true, name: true, email: true },
+          },
+        },
+      });
+
+      const responseMessage = scheduledDateTime
+        ? `Notificação agendada para ${scheduledDateTime.toLocaleString('pt-BR')}`
+        : 'Notificação criada e enviada com sucesso';
+
+      return NextResponse.json(
+        {
+          ...notification,
+          message: responseMessage,
+          isScheduled: !!scheduledDateTime,
+        },
+        { status: 201 }
+      );
+    }
+
+    // Se não foi especificado userId ou targetType é 'all', criar para todos os usuários
+    const allUsers = await prisma.user.findMany({
+      select: { id: true, name: true, email: true },
+    });
+
+    if (allUsers.length === 0) {
+      return NextResponse.json(
+        { error: 'Nenhum usuário encontrado no sistema' },
+        { status: 400 }
+      );
+    }
+
+    // Criar notificações para todos os usuários
+    const notificationsData = allUsers.map(user => ({
+      title,
+      message: notificationMessage,
+      type,
+      userId: user.id,
+      scheduledAt: scheduledDateTime,
+      sentAt: scheduledDateTime ? null : new Date(),
+      metadata: finalMetadata,
+    }));
+
+    const notifications = await prisma.notification.createMany({
+      data: notificationsData,
     });
 
     const responseMessage = scheduledDateTime
-      ? `Notificação agendada para ${scheduledDateTime.toLocaleString('pt-BR')}`
-      : 'Notificação criada e enviada com sucesso';
+      ? `${notifications.count} notificações agendadas para ${scheduledDateTime.toLocaleString('pt-BR')}`
+      : `${notifications.count} notificações criadas e enviadas com sucesso para todos os usuários`;
 
     return NextResponse.json(
       {
-        ...notification,
+        count: notifications.count,
+        users: allUsers.length,
         message: responseMessage,
         isScheduled: !!scheduledDateTime,
+        title,
+        type,
+        scheduledAt: scheduledDateTime,
       },
       { status: 201 }
     );

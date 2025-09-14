@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/select';
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useWindowSize } from 'usehooks-ts';
+import { getNotificationEmoji } from '@/lib/notification-utils';
 
 interface NotificationFormProps {
   form: NotificationFormType;
@@ -115,25 +116,15 @@ export function NotificationForm({
               </div>
             ))}
           </div>
-          <div className="mt-2 text-center">
-            <span className="text-sm text-neutral-400">
-              Passo {currentStep} de 3
-            </span>
-          </div>
         </div>
 
         <form onSubmit={handleFormSubmit} className="space-y-6">
           {/* Step 1: Basic Information */}
           {currentStep === 1 && (
             <div className="space-y-4">
-              <div className="mb-4 text-center">
-                <h3 className="text-lg font-semibold text-white">
-                  Informações Básicas
-                </h3>
-                <p className="text-sm text-neutral-400">
-                  Digite o título, descrição e tipo da notificação
-                </p>
-              </div>
+              <p className="mb-4 text-start text-sm text-neutral-400">
+                Digite o título, descrição e tipo da notificação
+              </p>
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-neutral-200">
@@ -179,24 +170,28 @@ export function NotificationForm({
                       value="SUPPORT"
                       className="text-white hover:bg-neutral-700"
                     >
+                      {getNotificationEmoji('SUPPORT')}
                       Suporte
                     </SelectItem>
                     <SelectItem
                       value="MENTION"
                       className="text-white hover:bg-neutral-700"
                     >
+                      {getNotificationEmoji('MENTION')}
                       Menção
                     </SelectItem>
                     <SelectItem
                       value="PLAN_EXPIRY"
                       className="text-white hover:bg-neutral-700"
                     >
+                      {getNotificationEmoji('PLAN_EXPIRY')}
                       Expiração de Plano
                     </SelectItem>
                     <SelectItem
                       value="SYSTEM"
                       className="text-white hover:bg-neutral-700"
                     >
+                      {getNotificationEmoji('SYSTEM')}
                       Sistema
                     </SelectItem>
                   </SelectContent>
@@ -208,14 +203,9 @@ export function NotificationForm({
           {/* Step 2: Target & Schedule */}
           {currentStep === 2 && (
             <div className="space-y-4">
-              <div className="mb-4 text-center">
-                <h3 className="text-lg font-semibold text-white">
-                  Destinatário e Agendamento
-                </h3>
-                <p className="text-sm text-neutral-400">
-                  Escolha quem receberá a notificação e quando
-                </p>
-              </div>
+              <p className=" mb-4 text-start text-sm text-neutral-400">
+                Escolha quem receberá a notificação e quando
+              </p>
 
               <UserSelector
                 targetType={form.targetType}
@@ -238,14 +228,9 @@ export function NotificationForm({
           {/* Step 3: Confirmation */}
           {currentStep === 3 && (
             <div className="space-y-4">
-              <div className="mb-4 text-center">
-                <h3 className="text-lg font-semibold text-white">
-                  Confirmar Dados
-                </h3>
-                <p className="text-sm text-neutral-400">
-                  Revise as informações antes de criar a notificação
-                </p>
-              </div>
+              <p className="mb-4 text-start text-sm text-neutral-400">
+                Revise as informações antes de criar a notificação
+              </p>
 
               <div className="space-y-3 rounded-lg border border-neutral-700 bg-neutral-800 p-4">
                 <div>
@@ -377,24 +362,34 @@ export function NotificationForm({
                   value="SUPPORT"
                   className="text-white hover:bg-neutral-700"
                 >
+                  <span className="mr-1">
+                    {getNotificationEmoji('SUPPORT')}
+                  </span>
                   Suporte
                 </SelectItem>
                 <SelectItem
                   value="MENTION"
                   className="text-white hover:bg-neutral-700"
                 >
+                  <span className="mr-1">
+                    {getNotificationEmoji('MENTION')}
+                  </span>
                   Menção
                 </SelectItem>
                 <SelectItem
                   value="PLAN_EXPIRY"
                   className="text-white hover:bg-neutral-700"
                 >
+                  <span className="mr-1">
+                    {getNotificationEmoji('PLAN_EXPIRY')}
+                  </span>
                   Expiração de Plano
                 </SelectItem>
                 <SelectItem
                   value="SYSTEM"
-                  className="text-white hover:bg-neutral-700"
+                  className=" text-white hover:bg-neutral-700"
                 >
+                  <span className="mr-1">{getNotificationEmoji('SYSTEM')}</span>
                   Sistema
                 </SelectItem>
               </SelectContent>
