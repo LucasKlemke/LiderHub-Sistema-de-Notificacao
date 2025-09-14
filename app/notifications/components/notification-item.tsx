@@ -8,6 +8,7 @@ import {
 } from '@/lib/notification-utils';
 import { Notification, User } from '@prisma/client';
 import { NotificationModal } from './notification-modal';
+import { useWindowSize } from 'usehooks-ts';
 
 interface NotificationItemProps {
   notification: Notification & { user: User };
@@ -16,7 +17,9 @@ interface NotificationItemProps {
 export const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
 }) => {
+  const { width } = useWindowSize();
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = width < 768; // Tailwind's md breakpoint
   return (
     <>
       <div
@@ -104,6 +107,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
         notification={notification}
         open={isOpen}
         onClose={() => setIsOpen(false)}
+        isMobile={isMobile}
       />
     </>
   );
