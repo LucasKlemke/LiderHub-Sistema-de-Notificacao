@@ -22,6 +22,18 @@ export async function GET(request: NextRequest) {
 
     const now = new Date();
 
+    const whereDefault = {
+      OR: [{ userId: userId }],
+      AND: [
+        {
+          OR: [
+            { scheduledAt: null }, // Immediate notifications
+            { scheduledAt: { lte: now } }, // Scheduled notifications that should be shown now
+          ],
+        },
+      ],
+    };
+
     // hoje tem que ser apos a data de scheduleat, para aparecer as notificacoes agendadas apos a data
 
     const where = {
@@ -54,18 +66,19 @@ export async function GET(request: NextRequest) {
         prisma.notification.count({
           where: {
             userId: userId,
+            ...whereDefault,
           },
         }),
-        prisma.notification.count({ where }),
+        prisma.notification.count({ where: { ...whereDefault, ...where } }),
         prisma.notification.count({
           where: {
-            OR: [{ userId: userId }],
+            ...whereDefault,
             isRead: false,
           },
         }),
         prisma.notification.count({
           where: {
-            OR: [{ userId: userId }],
+            ...whereDefault,
             isRead: true,
           },
         }),

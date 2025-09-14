@@ -59,10 +59,13 @@ export function DatePicker({
 
   // Handle time change
   const handleTimeChange = (newTime: string) => {
+    if (newTime === '') {
+      setTime('00:00');
+      return;
+    }
     setTime(newTime);
 
     if (date) {
-      // Combine current date with new time
       const [hours, minutes] = newTime.split(':').map(Number);
       const newDateTime = new Date(date);
       newDateTime.setHours(hours, minutes, 0, 0);
@@ -155,6 +158,8 @@ export function DatePicker({
               Hora
             </Label>
             <Input
+              min="00:00"
+              max="23:59"
               type="time"
               id="time-picker"
               step="60"
