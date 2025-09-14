@@ -4,6 +4,7 @@ import './globals.css';
 import { SidebarProvider } from '@/components/sidebar-provider';
 import { SidebarContextProvider } from '@/components/sidebar-context';
 import { QueryProvider } from '@/components/query-provider';
+import { ConvexClientProvider } from './context/ConvexClientProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,11 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} dark antialiased`}
       >
-        <QueryProvider>
-          <SidebarContextProvider>
-            <SidebarProvider>{children}</SidebarProvider>
-          </SidebarContextProvider>
-        </QueryProvider>
+        <ConvexClientProvider>
+          <QueryProvider>
+            <SidebarContextProvider>
+              <SidebarProvider>{children}</SidebarProvider>
+            </SidebarContextProvider>
+          </QueryProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   );

@@ -4,91 +4,15 @@ import { useCreateNotificationMutation } from '@/lib/hooks/useNotifications';
 import { NotificationForm, type NotificationFormType } from './components';
 import Header from '@/components/header';
 import { SharedTabs, type Tab } from '@/components/shared-tabs';
+import { Button } from '@/components/ui/button';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 const NotificationSimulator = () => {
   const [activeTab, setActiveTab] = useState('create');
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState('');
-
-  // React Query mutation for creating notifications
-  const createNotificationMutation = useCreateNotificationMutation();
-
-  // Estado do formulário unificado
-  const [form, setForm] = useState<NotificationFormType>({
-    title: '',
-    description: '',
-    type: 'MENTION',
-    targetType: 'all' as 'all' | 'specific',
-    targetUserId: '',
-    shouldSchedule: 'no' as 'yes' | 'no',
-    scheduledDate: undefined as Date | undefined,
-  });
-
-  // Função simplificada para enviar notificação - agora usa mutation
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Payload unificado para todos os tipos de notificação
-      const payload = {
-        title: form.title,
-        description: form.description,
-        type: form.type,
-        targetType: form.targetType,
-        userId: form.targetType === 'specific' ? form.targetUserId : undefined,
-        scheduledDate:
-          form.shouldSchedule === 'yes' && form.scheduledDate
-            ? form.scheduledDate.toISOString()
-            : undefined,
-      };
-
-      // Use the mutation instead of manual fetch
-      const data = await createNotificationMutation.mutateAsync(payload);
-
-      // Usar a mensagem retornada pelo servidor que já inclui informação sobre agendamento
-      setMessage(
-        data.message ||
-          `Notificação ${getNotificationTypeName(form.type)} criada com sucesso!`
-      );
-
-      // Reset form
-      setForm({
-        title: '',
-        description: '',
-        type: 'MENTION',
-        targetType: 'all',
-        targetUserId: '',
-        shouldSchedule: 'no',
-        scheduledDate: undefined,
-      });
-    } catch (error) {
-      setMessage(
-        `Erro: ${error instanceof Error ? error.message : 'Erro ao criar notificação'}`
-      );
-      console.error('Error creating notification:', error);
-    }
-
-    setIsLoading(false);
-  };
-
-  // Helper function para nomes dos tipos
-  const getNotificationTypeName = (type: string) => {
-    switch (type) {
-      case 'CAMPAIGN':
-        return 'de campanha';
-      case 'MENTION':
-        return 'de menção';
-      case 'PLAN_EXPIRY':
-        return 'de expiração de plano';
-      case 'TICKET':
-        return 'de ticket';
-      default:
-        return '';
-    }
-  };
-
   const tabs: Tab[] = [{ key: 'create', label: 'Criar Notificação' }];
+
+  const createNotification = useMutation(api.notifications.createNotification);
 
   return (
     <div className="min-h-screen bg-[#1a1b23]">
@@ -98,13 +22,6 @@ const NotificationSimulator = () => {
           <Header title="Simular Notificações" />
         </div>
 
-        {/* Message - Responsive */}
-        {message && (
-          <div className="mb-4 rounded-lg border border-blue-200/20 bg-blue-900/20 p-3 sm:mb-6 sm:p-4">
-            <p className="text-sm text-blue-200 sm:text-base">{message}</p>
-          </div>
-        )}
-
         {/* Tabs - Mobile Responsive */}
         <SharedTabs
           tabs={tabs}
@@ -113,17 +30,21 @@ const NotificationSimulator = () => {
           showCounts={false}
         />
 
-        {/* Content - Responsive Container */}
-        {activeTab === 'create' && (
-          <div className="p-4 sm:p-6 lg:p-8">
-            <NotificationForm
-              form={form}
-              onFormChange={setForm}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-            />
-          </div>
-        )}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <Button onClick={() => createNotification({ text: 'Novo Like' })}>
+            Novo Like
+          </Button>
+
+          <Button onClick={() => createNotification({ text: 'Novo Vídeo' })}>
+            Novo Vídeo
+          </Button>
+
+          <Button
+            onClick={() => createNotification({ text: 'Novo Comentário' })}
+          >
+            Novo Comentário
+          </Button>
+        </div>
       </div>
     </div>
   );

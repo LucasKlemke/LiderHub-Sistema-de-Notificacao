@@ -5,65 +5,18 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { NotificationItem } from './notification-item';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Notification, User } from '@prisma/client';
 
 interface NotificationListProps {
-  notifications: (Notification & { user: User })[];
-  isLoading: boolean;
-  isError: boolean;
-  error?: Error | null;
+  notifications: { _id: string; text: string; isRead: boolean }[];
+  hasNewNotifications: boolean;
 }
 
 export const NotificationList: React.FC<NotificationListProps> = ({
   notifications,
-  isLoading,
-  isError,
-  error,
+  hasNewNotifications,
 }) => {
-  // Loading skeleton
-  if (isLoading) {
-    return (
-      <div className="space-y-3 p-4 sm:space-y-4 sm:p-6">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="flex items-start gap-3 p-3 sm:gap-4 sm:p-4">
-              <Skeleton className="h-8 w-8 rounded-full  sm:h-10 sm:w-10" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-3/4 rounded " />
-                <Skeleton className="h-3 w-1/2 rounded " />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  // Error state
-  if (isError) {
-    return (
-      <div className="px-4 py-8 text-center sm:px-6 sm:py-12">
-        <AlertCircle className="mx-auto mb-4 h-10 w-10 text-red-400 sm:h-12 sm:w-12" />
-        <h3 className="mb-2 text-base font-medium text-white sm:text-lg">
-          Erro ao carregar notificações
-        </h3>
-        <p className="mb-4 text-sm text-neutral-400 sm:text-base">
-          {error?.message || 'Algo deu errado ao buscar as notificações.'}
-        </p>
-        <Button
-          onClick={() => window.location.reload()}
-          variant="outline"
-          className="flex items-center gap-2 border-neutral-600 bg-transparent text-neutral-200 hover:bg-neutral-800 hover:text-white"
-          size="sm"
-        >
-          Tentar novamente
-        </Button>
-      </div>
-    );
-  }
-
   // Empty state
-  if (notifications.length === 0) {
+  if (!hasNewNotifications) {
     return (
       <div className="px-4 py-8 text-center sm:px-6 sm:py-12">
         <Bell className="mx-auto mb-4 h-10 w-10 text-neutral-500 sm:h-12 sm:w-12" />
@@ -78,19 +31,21 @@ export const NotificationList: React.FC<NotificationListProps> = ({
     );
   }
 
+  if (hasNewNotifications) {
+    return (
+      <ScrollArea className="h-[70vh]  sm:h-[calc(100vh-300px)]">
+        <div className="p-3 sm:p-4">
+          <ul className="flex flex-col gap-2 sm:gap-3">
+            {notifications.map(notification => (
+              <NotificationItem
+                key={notification._id}
+                notification={notification}
+              />
+            ))}
+          </ul>
+        </div>
+      </ScrollArea>
+    );
+  }
   // Notifications list
-  return (
-    <ScrollArea className="h-[70vh]  sm:h-[calc(100vh-300px)]">
-      <div className="p-3 sm:p-4">
-        <ul className="flex flex-col gap-2 sm:gap-3">
-          {notifications.map(notification => (
-            <NotificationItem
-              key={notification.id}
-              notification={notification}
-            />
-          ))}
-        </ul>
-      </div>
-    </ScrollArea>
-  );
 };
