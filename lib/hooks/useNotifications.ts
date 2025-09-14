@@ -123,6 +123,8 @@ export const useNotifications = (params: NotificationsParams) => {
     queryFn: () => fetchNotifications(params),
     enabled: !!params.userId,
     placeholderData: keepPreviousData,
+    refetchInterval: 10000, // Refresh every 10 seconds (10000ms)
+    refetchIntervalInBackground: true, // Continue polling even when tab is not focused
   });
 };
 
