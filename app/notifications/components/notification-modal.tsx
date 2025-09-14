@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Calendar, User as UserIcon, Check } from 'lucide-react';
+import { Calendar, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

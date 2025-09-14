@@ -1,18 +1,14 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useCreateNotificationMutation } from '@/lib/hooks/useNotifications';
 import {
   NotificationForm,
-  SchedulerStatus,
-  type SchedulerStatusType,
   type NotificationFormType,
 } from './components';
 import Header from '@/components/header';
 
 const NotificationSimulator = () => {
   const [activeTab, setActiveTab] = useState('create');
-  const [schedulerStatus, setSchedulerStatus] =
-    useState<SchedulerStatusType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -143,15 +139,6 @@ const NotificationSimulator = () => {
               onFormChange={setForm}
               onSubmit={handleSubmit}
               isLoading={isLoading}
-            />
-          </div>
-        )}
-
-        {activeTab === 'schedule' && (
-          <div className="p-4 sm:p-6 lg:p-8">
-            <SchedulerStatus
-              schedulerStatus={schedulerStatus}
-              isLoading={false}
             />
           </div>
         )}

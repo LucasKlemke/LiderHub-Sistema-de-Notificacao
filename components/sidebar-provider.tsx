@@ -1,14 +1,14 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/sidebar';
 import { IconChevronDown } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { Menu, TestTube2, X } from 'lucide-react';
+import { TestTube2, X } from 'lucide-react';
 import NotificationIcon from './notification-icon';
 import { useWindowSize } from 'usehooks-ts';
-import { Button } from './ui/button';
 import { useMobileSidebar } from './sidebar-context';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const { open, setOpen } = useMobileSidebar();
@@ -17,7 +17,6 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   // Responsive breakpoints
   const isMobile = width < 768; // Mobile: < 768px
   const isTablet = width >= 768 && width < 1024; // Tablet: 768px - 1024px
-  const isDesktop = width >= 1024; // Desktop: >= 1024px
 
   // Determine sidebar behavior based on screen size
   const shouldUseMobileSidebar = isMobile || isTablet;
@@ -268,13 +267,13 @@ export const Logo = ({ open }: { open: boolean }) => {
     >
       {!open ? (
         /* When its closed */
-        <img
+        <Image
           src="https://liderhub.ai/wp-content/uploads/2025/06/ico.svg"
           alt="LiderHubIcon"
         />
       ) : (
         <div className="flex flex-col gap-2">
-          <img
+          <Image
             src="https://liderhub.ai/wp-content/uploads/2025/06/lider-white.svg"
             alt="LiderHub"
             className="h-8 shrink-0"
@@ -288,7 +287,10 @@ export const Logo = ({ open }: { open: boolean }) => {
 
 export const LogoIcon = () => {
   return (
-    <Link href="#" className="relative z-20 flex items-center justify-center py-1">
+    <Link
+      href="#"
+      className="relative z-20 flex items-center justify-center py-1"
+    >
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600">
         <div className="h-4 w-4 rotate-45 transform rounded-sm bg-white" />
       </div>

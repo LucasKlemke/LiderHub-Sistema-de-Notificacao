@@ -6,14 +6,7 @@ export interface User {
   email: string;
 }
 
-export interface SchedulerStatus {
-  scheduler: {
-    running: boolean;
-    lastRun?: string;
-    nextRun?: string;
-  };
-  timestamp: string;
-}
+
 
 export interface NotificationForm {
   title: string;

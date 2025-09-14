@@ -100,11 +100,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
                   }
                 >
                   {formatTime(
-                    new Date(
-                      notification.scheduledAt ||
-                        notification.sentAt ||
-                        notification.createdAt
-                    )
+                    new Date(notification.scheduledAt || notification.createdAt)
                   )}
                 </span>
               </div>

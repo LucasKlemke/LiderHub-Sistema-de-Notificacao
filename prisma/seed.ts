@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { NotificationType, PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
@@ -108,7 +108,7 @@ async function main() {
         id: `${userId}_notif${notifIndex}`,
         title: title!,
         message: message!,
-        type: type as any,
+        type: type as NotificationType,
         isRead,
         userId,
         createdAt,

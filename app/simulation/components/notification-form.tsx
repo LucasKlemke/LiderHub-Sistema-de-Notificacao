@@ -18,6 +18,7 @@ import {
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useWindowSize } from 'usehooks-ts';
 import { getNotificationEmoji } from '@/lib/notification-utils';
+import { NotificationType } from '@prisma/client';
 
 interface NotificationFormProps {
   form: NotificationFormType;
@@ -160,7 +161,9 @@ export function NotificationForm({
                 </Label>
                 <Select
                   value={form.type}
-                  onValueChange={value => updateForm({ type: value as any })}
+                  onValueChange={value =>
+                    updateForm({ type: value as NotificationType })
+                  }
                 >
                   <SelectTrigger className="h-12 border-neutral-600 bg-neutral-800 text-white focus:border-blue-500 focus:ring-blue-500">
                     <SelectValue placeholder="Selecione o tipo" />
@@ -352,7 +355,9 @@ export function NotificationForm({
             </Label>
             <Select
               value={form.type}
-              onValueChange={value => updateForm({ type: value as any })}
+              onValueChange={value =>
+                updateForm({ type: value as NotificationType })
+              }
             >
               <SelectTrigger className="h-10 border-neutral-600 bg-neutral-800 text-white focus:border-blue-500 focus:ring-blue-500 sm:h-11">
                 <SelectValue placeholder="Selecione o tipo" />

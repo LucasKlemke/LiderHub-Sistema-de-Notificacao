@@ -99,7 +99,7 @@ const createNotification = async (payload: {
   targetType: 'all' | 'specific';
   userId?: string;
   scheduledDate?: string;
-}): Promise<any> => {
+}): Promise<{ message: string }> => {
   const response = await fetch('/api/notifications', {
     method: 'POST',
     headers: {
