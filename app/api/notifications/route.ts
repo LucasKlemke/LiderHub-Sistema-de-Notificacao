@@ -118,7 +118,6 @@ export async function POST(request: NextRequest) {
       targetType = 'all', // 'all' para notificação em massa, 'specific' para usuário específico
       scheduledAt,
       scheduledDate, // Aceita tanto scheduledAt quanto scheduledDate
-      metadata,
     } = body;
 
     // Usar description como message se fornecido
@@ -139,24 +138,6 @@ export async function POST(request: NextRequest) {
       scheduledDateTime = new Date(scheduledDate);
     }
 
-    // Criar metadata baseado no tipo se não fornecido
-    let finalMetadata = metadata;
-    if (!finalMetadata) {
-      const defaultLinks = {
-        CAMPAIGN: '/campaigns',
-        MENTION: '/notifications',
-        PLAN_EXPIRY: '/billing',
-        TICKET: '/tickets',
-      };
-
-      finalMetadata = {
-        link:
-          defaultLinks[type as keyof typeof defaultLinks] || '/notifications',
-        createdBy: 'user',
-        targetType,
-      };
-    }
-
     // Se targetType for 'specific' e userId for fornecido, criar para usuário específico
     if (targetType === 'specific' && userId) {
       const notification = await prisma.notification.create({
@@ -166,8 +147,6 @@ export async function POST(request: NextRequest) {
           type,
           userId: userId,
           scheduledAt: scheduledDateTime,
-          sentAt: scheduledDateTime ? null : new Date(),
-          metadata: finalMetadata,
         },
         include: {
           user: {
@@ -209,8 +188,6 @@ export async function POST(request: NextRequest) {
       type,
       userId: user.id,
       scheduledAt: scheduledDateTime,
-      sentAt: scheduledDateTime ? null : new Date(),
-      metadata: finalMetadata,
     }));
 
     const notifications = await prisma.notification.createMany({

@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -34,11 +33,6 @@ const NotificationContent: React.FC<{
   className?: string;
   isMobile?: boolean;
 }> = ({ notification, onClose, className, isMobile }) => {
-  const handleMarkAsRead = () => {
-    // onMarkAsRead(notification.id);
-    onClose();
-  };
-
   return (
     <div className={className}>
       <div className="space-y-4 text-left">
@@ -59,16 +53,6 @@ const NotificationContent: React.FC<{
       </div>
 
       <div className="flex gap-2 pt-4">
-        {!notification.isRead && (
-          <Button
-            onClick={handleMarkAsRead}
-            className={`flex items-center gap-2 ${isMobile ? 'w-full' : ''}`}
-          >
-            <Check className="h-4 w-4" />
-            Marcar como lida
-          </Button>
-        )}
-
         {!isMobile && (
           <Button variant="outline" onClick={onClose}>
             Fechar

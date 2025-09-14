@@ -70,7 +70,7 @@ const markNotificationAsRead = async (
   notificationId: string
 ): Promise<void> => {
   const response = await fetch(`/api/notifications/${notificationId}/read`, {
-    method: 'POST',
+    method: 'PATCH',
   });
 
   if (!response.ok) {

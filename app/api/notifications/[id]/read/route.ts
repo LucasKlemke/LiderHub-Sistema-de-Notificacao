@@ -4,10 +4,10 @@ import { prisma } from '@/lib/db';
 // PATCH /api/notifications/[id]/read - Mark notification as read
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const notification = await prisma.notification.update({
       where: { id },

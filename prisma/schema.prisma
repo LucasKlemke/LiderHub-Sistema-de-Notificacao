@@ -27,13 +27,11 @@ model Notification {
   message     String
   type        NotificationType
   isRead      Boolean          @default(false)
-  userId      String? // null for mass notifications
-  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   scheduledAt DateTime? // for scheduled notifications
-  sentAt      DateTime? // when it was actually sent
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
-  metadata    Json? // additional data like links, actions, etc.
 
   @@map("notifications")
 }

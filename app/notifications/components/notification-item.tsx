@@ -9,6 +9,7 @@ import {
 import { Notification, User } from '@prisma/client';
 import { NotificationModal } from './notification-modal';
 import { useWindowSize } from 'usehooks-ts';
+import { useMarkAsReadMutation } from '@/lib/hooks/useNotifications';
 
 interface NotificationItemProps {
   notification: Notification & { user: User };
@@ -20,10 +21,19 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
   const { width } = useWindowSize();
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = width < 768; // Tailwind's md breakpoint
+  const markAsReadMutation = useMarkAsReadMutation();
+
+  const handleMarkAsRead = (notificationId: string) => {
+    if (!notification.isRead) {
+      markAsReadMutation.mutate(notificationId);
+    }
+  };
   return (
     <>
       <div
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+        }}
         className={`flex cursor-pointer items-start gap-3 rounded-lg p-3 transition-colors sm:gap-4 sm:p-4 ${
           !notification.isRead
             ? 'border-l-4 border-blue-500 bg-neutral-800'
@@ -106,7 +116,10 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
       <NotificationModal
         notification={notification}
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={() => {
+          setIsOpen(false);
+          handleMarkAsRead(notification.id);
+        }}
         isMobile={isMobile}
       />
     </>

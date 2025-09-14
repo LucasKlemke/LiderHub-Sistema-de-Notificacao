@@ -18,7 +18,7 @@ git clone <url-do-repositorio>
 ### 2. Entrar no repositório e instalar dependências
 
 ```bash
-cd my-project
+cd LiderHub-Sistema-de-Notificacao
 pnpm install
 ```
 
@@ -37,7 +37,7 @@ npx prisma db push
 ### 4. Popular o banco com dados de exemplo
 
 ```bash
-npx tsx prisma/seed.ts
+node prisma/seed.ts
 ```
 
 ### 5. Rodar o projeto
