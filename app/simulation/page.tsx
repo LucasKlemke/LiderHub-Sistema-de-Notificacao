@@ -30,21 +30,6 @@ const NotificationSimulator = () => {
     scheduledDate: undefined as Date | undefined,
   });
 
-  // Verificar status do scheduler
-  const checkSchedulerStatus = async () => {
-    try {
-      const response = await fetch('/api/scheduler/status');
-      const data = await response.json();
-      setSchedulerStatus(data);
-    } catch (error) {
-      console.error('Erro ao verificar status do scheduler:', error);
-    }
-  };
-
-  useEffect(() => {
-    checkSchedulerStatus();
-  }, []);
-
   // Função simplificada para enviar notificação - agora usa mutation
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,13 +1,4 @@
-import React from 'react';
 import { NotificationType } from '@prisma/client';
-import {
-  CheckCircle,
-  AlertTriangle,
-  AlertCircle,
-  Settings,
-  Info,
-} from 'lucide-react';
-
 
 /**
  * Format time relative to now (e.g., "2h ago", "5m ago")
