@@ -1,11 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { useCreateNotificationMutation } from '@/lib/hooks/useNotifications';
-import {
-  NotificationForm,
-  type NotificationFormType,
-} from './components';
+import { NotificationForm, type NotificationFormType } from './components';
 import Header from '@/components/header';
+import { SharedTabs, type Tab } from '@/components/shared-tabs';
 
 const NotificationSimulator = () => {
   const [activeTab, setActiveTab] = useState('create');
@@ -90,7 +88,7 @@ const NotificationSimulator = () => {
     }
   };
 
-  const tabs = [{ key: 'create', label: 'Criar Notificação' }];
+  const tabs: Tab[] = [{ key: 'create', label: 'Criar Notificação' }];
 
   return (
     <div className="min-h-screen bg-[#1a1b23]">
@@ -108,30 +106,14 @@ const NotificationSimulator = () => {
         )}
 
         {/* Tabs - Mobile Responsive */}
-        <div className="mb-6 border-b border-neutral-700 lg:mb-8">
-          <nav className="-mb-px flex">
-            {tabs.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`
-                  flex-1 border-b-2 px-3 py-3 text-center text-sm font-medium transition-colors
-                  sm:flex-none sm:px-6 sm:text-base
-                  ${
-                    activeTab === key
-                      ? 'border-blue-500 text-blue-400'
-                      : 'border-transparent text-neutral-400 hover:border-neutral-600 hover:text-neutral-300'
-                  }
-                `}
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
-        </div>
+        <SharedTabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          showCounts={false}
+        />
 
         {/* Content - Responsive Container */}
-
         {activeTab === 'create' && (
           <div className="p-4 sm:p-6 lg:p-8">
             <NotificationForm

@@ -268,15 +268,19 @@ export const Logo = ({ open }: { open: boolean }) => {
       {!open ? (
         /* When its closed */
         <Image
+          width={32}
+          height={32}
           src="https://liderhub.ai/wp-content/uploads/2025/06/ico.svg"
           alt="LiderHubIcon"
         />
       ) : (
         <div className="flex flex-col gap-2">
           <Image
+            width={120}
+            height={40}
             src="https://liderhub.ai/wp-content/uploads/2025/06/lider-white.svg"
             alt="LiderHub"
-            className="h-8 shrink-0"
+            className="h-10 w-auto shrink-0"
           />
           <span className="text-muted-foreground text-xs">Backed by YC</span>
         </div>
