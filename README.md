@@ -1,36 +1,143 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LiderHub Notification System
 
-## Getting Started
+Um sistema de notificações desenvolvido com Next.js, Prisma, SQLite e TypeScript para gerenciar notificações de usuários com diferentes tipos (menções, suporte, expiração de planos e sistema).
 
-First, run the development server:
+## 🚀 Como rodar o projeto
+
+### Pré-requisitos
+
+- Node.js (versão 18 ou superior)
+- pnpm instalado globalmente
+
+### 1. Clonar o repositório
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <url-do-repositorio>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Entrar no repositório e instalar dependências
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd my-project
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Configurar o banco de dados Prisma
 
-## Learn More
+Gerar o cliente Prisma e criar/atualizar o banco de dados:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Gerar o cliente Prisma
+npx prisma generate
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Aplicar as migrations e criar o banco
+npx prisma db push
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. Popular o banco com dados de exemplo
 
-## Deploy on Vercel
+```bash
+npx tsx prisma/seed.ts
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. Rodar o projeto
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm run dev
+```
+
+O projeto estará disponível em [http://localhost:3000](http://localhost:3000)
+
+## 📋 Funcionalidades
+
+- **Sistema de Notificações**: Visualização e gerenciamento de notificações
+- **Tipos de Notificação**:
+  - 🏷️ **MENTION**: Menções e tags em comentários
+  - ⏰ **PLAN_EXPIRY**: Avisos de expiração de plano
+  - 🎧 **SUPPORT**: Atualizações de tickets de suporte
+  - 🔧 **SYSTEM**: Anúncios do sistema e novas funcionalidades
+- **Simulador**: Ferramenta para criar e agendar notificações de teste
+- **Interface Responsiva**: Design moderno com Tailwind CSS e Radix UI
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, Radix UI
+- **Banco de Dados**: SQLite com Prisma ORM
+- **Estado**: TanStack Query (React Query)
+- **Ícones**: Lucide React, Tabler Icons
+- **Utilitários**: date-fns, faker.js (para seed)
+
+## 📁 Estrutura do Projeto
+
+```
+├── app/                          # App Router do Next.js
+│   ├── api/                      # API Routes
+│   │   ├── notifications/        # Endpoints de notificações
+│   │   └── users/               # Endpoints de usuários
+│   ├── notifications/           # Página de notificações
+│   └── simulation/              # Página do simulador
+├── components/                  # Componentes reutilizáveis
+│   └── ui/                     # Componentes de UI (shadcn/ui)
+├── lib/                        # Utilitários e configurações
+│   ├── hooks/                  # Custom hooks
+│   └── db.ts                   # Configuração do Prisma
+├── prisma/                     # Schema e configurações do banco
+│   ├── schema.prisma           # Schema do banco de dados
+│   └── seed.ts                 # Script para popular o banco
+└── public/                     # Arquivos estáticos
+```
+
+## 🗄️ Banco de Dados
+
+O projeto utiliza SQLite como banco de dados com as seguintes tabelas:
+
+- **Users**: Usuários do sistema
+- **Notifications**: Notificações com tipos, status de leitura e metadados
+
+### Comandos úteis do Prisma
+
+```bash
+# Visualizar o banco no Prisma Studio
+npx prisma studio
+
+# Reset do banco (apaga todos os dados)
+npx prisma db push --force-reset
+
+# Gerar novamente o cliente após mudanças no schema
+npx prisma generate
+```
+
+## 🎯 Páginas Principais
+
+- **`/notifications`**: Lista e gerencia todas as notificações
+- **`/simulation`**: Ferramenta para criar e testar notificações
+
+## 📦 Scripts Disponíveis
+
+- `pnpm dev`: Roda o servidor de desenvolvimento
+- `pnpm build`: Gera build de produção
+- `pnpm start`: Roda o servidor de produção
+- `pnpm lint`: Executa o linter
+- `pnpm format`: Formata o código com Prettier
+
+## 👥 Dados de Teste
+
+Após rodar o seed, você terá:
+- 5 usuários de exemplo (incluindo `liderhubadmin@email.com`)
+- 70+ notificações de diferentes tipos
+- Dados realistas gerados com Faker.js
+
+## 🔧 Desenvolvimento
+
+Para contribuir com o projeto:
+
+1. Faça um fork do repositório
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
+
+---
+
+Desenvolvido com ❤️ para o LiderHub
