@@ -228,6 +228,6 @@ pnpm build
 pnpm start
 ```
 
-**Desenvolvido com ❤️ para o LiderHub**
+**Desenvolvido com ❤️ para o LiderHub** (essa parte foi a IA que adicionou 🤧)
 
 *Sistema de Notificações v1.0 - Agentes de IA totalmente humanizados*
