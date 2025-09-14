@@ -1,31 +1,56 @@
-# LiderHub Notification System
+# LiderHub Sistema de Notificações
 
-Um sistema de notificações desenvolvido com Next.js, Prisma, SQLite e TypeScript para gerenciar notificações de usuários com diferentes tipos (menções, suporte, expiração de planos e sistema).
+Um sistema completo de notificações desenvolvido com Next.js 15, React 19, TypeScript, Prisma e SQLite para gerenciar notificações de usuários com diferentes tipos, agendamento e funcionalidades avançadas.
 
-## 🚀 Como rodar o projeto
+## ✨ Funcionalidades Principais
+
+### 🔔 Sistema de Notificações Completo
+- **Visualização e Gerenciamento**: Interface intuitiva para visualizar todas as notificações
+- **Filtros Avançados**: Filtragem por status (lidas/não lidas) e tipos de notificação
+- **Paginação Responsiva**: Sistema de paginação otimizado para desktop e mobile
+- **Marcação em Massa**: Marcar todas as notificações como lidas de uma vez
+
+### 📱 Tipos de Notificação
+- 🏷️ **MENTION**: Menções e tags em comentários ou posts
+- ⏰ **PLAN_EXPIRY**: Avisos de expiração de plano e lembretes de renovação
+- 🎧 **SUPPORT**: Atualizações de tickets de suporte e atendimento ao cliente
+- 🔧 **SYSTEM**: Anúncios do sistema, alertas de manutenção e atualizações de funcionalidades
+
+### 📅 Sistema de Agendamento
+- **Notificações Imediatas**: Envio instantâneo de notificações
+- **Agendamento Flexível**: Agende notificações para datas e horários específicos
+- **Processamento Automático**: Sistema para processar notificações agendadas
+- **Controle de Envio**: Rastreamento de notificações enviadas vs. agendadas
+
+### 🎯 Notificações Direcionadas
+- **Notificações Específicas**: Envio para usuários específicos
+- **Notificações em Massa**: Envio para todos os usuários do sistema
+- **Flexibilidade de Targeting**: Escolha entre envio individual ou broadcast
+
+### 🧪 Simulador de Notificações
+- **Interface de Teste**: Ferramenta completa para criar e testar notificações
+- **Formulário Intuitivo**: Interface amigável para configurar todos os parâmetros
+- **Preview em Tempo Real**: Visualização das notificações antes do envio
+- **Agendamento de Testes**: Possibilidade de agendar notificações de teste
+
+## 🚀 Como Executar o Projeto
 
 ### Pré-requisitos
-
 - Node.js (versão 18 ou superior)
-- pnpm instalado globalmente
+- pnpm instalado globalmente (`npm install -g pnpm`)
 
-### 1. Clonar o repositório
-
+### 1. Clonar o Repositório
 ```bash
 git clone <url-do-repositorio>
+cd LiderHub-Sistema-de-Notificacao
 ```
 
-### 2. Entrar no repositório e instalar dependências
-
+### 2. Instalar Dependências
 ```bash
-cd LiderHub-Sistema-de-Notificacao
 pnpm install
 ```
 
-### 3. Configurar o banco de dados Prisma
-
-Gerar o cliente Prisma e criar/atualizar o banco de dados:
-
+### 3. Configurar o Banco de Dados
 ```bash
 # Gerar o cliente Prisma
 npx prisma generate
@@ -34,39 +59,43 @@ npx prisma generate
 npx prisma db push
 ```
 
-### 4. Popular o banco com dados de exemplo
-
+### 4. Popular o Banco com Dados de Exemplo
 ```bash
 node prisma/seed.ts
 ```
 
-### 5. Rodar o projeto
-
+### 5. Executar o Projeto
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
 O projeto estará disponível em [http://localhost:3000](http://localhost:3000)
 
-## 📋 Funcionalidades
+## 🛠️ Stack Tecnológica
 
-- **Sistema de Notificações**: Visualização e gerenciamento de notificações
-- **Tipos de Notificação**:
-  - 🏷️ **MENTION**: Menções e tags em comentários
-  - ⏰ **PLAN_EXPIRY**: Avisos de expiração de plano
-  - 🎧 **SUPPORT**: Atualizações de tickets de suporte
-  - 🔧 **SYSTEM**: Anúncios do sistema e novas funcionalidades
-- **Simulador**: Ferramenta para criar e agendar notificações de teste
-- **Interface Responsiva**: Design moderno com Tailwind CSS e Radix UI
+### Frontend
+- **Next.js 15**: Framework React com App Router
+- **React 19**: Biblioteca de interface de usuário
+- **TypeScript**: Tipagem estática
+- **Tailwind CSS**: Framework de estilos utilitários
+- **Radix UI**: Componentes de UI acessíveis
+- **Motion**: Animações e transições
+- **Lucide React & Tabler Icons**: Conjunto de ícones
 
-## 🛠️ Tecnologias Utilizadas
+### Backend & Banco de Dados
+- **Prisma ORM**: Object-Relational Mapping
+- **SQLite**: Banco de dados local
+- **Next.js API Routes**: Endpoints da API
 
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **Styling**: Tailwind CSS, Radix UI
-- **Banco de Dados**: SQLite com Prisma ORM
-- **Estado**: TanStack Query (React Query)
-- **Ícones**: Lucide React, Tabler Icons
-- **Utilitários**: date-fns, faker.js (para seed)
+### Estado e Gerenciamento
+- **TanStack Query (React Query)**: Gerenciamento de estado do servidor
+- **React Hooks**: Hooks customizados para funcionalidades
+
+### Desenvolvimento
+- **ESLint**: Linting de código
+- **Prettier**: Formatação de código
+- **Faker.js**: Geração de dados de teste
+- **date-fns**: Manipulação de datas
 
 ## 📁 Estrutura do Projeto
 
@@ -74,70 +103,131 @@ O projeto estará disponível em [http://localhost:3000](http://localhost:3000)
 ├── app/                          # App Router do Next.js
 │   ├── api/                      # API Routes
 │   │   ├── notifications/        # Endpoints de notificações
+│   │   │   ├── [id]/            # Operações específicas por ID
+│   │   │   ├── bulk-read/       # Marcar múltiplas como lidas
+│   │   │   ├── scheduled/       # Gerenciar notificações agendadas
+│   │   │   └── route.ts         # CRUD principal de notificações
 │   │   └── users/               # Endpoints de usuários
-│   ├── notifications/           # Página de notificações
-│   └── simulation/              # Página do simulador
+│   ├── notifications/           # Página principal de notificações
+│   │   └── components/          # Componentes específicos
+│   ├── simulation/              # Simulador de notificações
+│   │   └── components/          # Componentes do simulador
+│   ├── layout.tsx               # Layout raiz da aplicação
+│   └── globals.css              # Estilos globais
 ├── components/                  # Componentes reutilizáveis
-│   └── ui/                     # Componentes de UI (shadcn/ui)
+│   ├── ui/                     # Componentes de UI (shadcn/ui)
+│   ├── header.tsx              # Cabeçalho da aplicação
+│   ├── sidebar-*.tsx           # Sistema de sidebar
+│   └── query-provider.tsx      # Provider do React Query
 ├── lib/                        # Utilitários e configurações
 │   ├── hooks/                  # Custom hooks
-│   └── db.ts                   # Configuração do Prisma
-├── prisma/                     # Schema e configurações do banco
+│   │   └── useNotifications.ts # Hook principal de notificações
+│   ├── db.ts                   # Configuração do Prisma
+│   ├── notification-service.ts # Serviços de notificação
+│   ├── notification-utils.tsx  # Utilitários de notificação
+│   └── utils.ts                # Utilitários gerais
+├── prisma/                     # Configurações do banco
 │   ├── schema.prisma           # Schema do banco de dados
-│   └── seed.ts                 # Script para popular o banco
+│   ├── seed.ts                 # Script de população do banco
+│   └── dev.db                  # Banco SQLite (gerado)
 └── public/                     # Arquivos estáticos
 ```
 
-## 🗄️ Banco de Dados
+## 🗄️ Modelo de Dados
 
-O projeto utiliza SQLite como banco de dados com as seguintes tabelas:
-
-- **Users**: Usuários do sistema
-- **Notifications**: Notificações com tipos, status de leitura e metadados
-
-### Comandos úteis do Prisma
-
-```bash
-# Visualizar o banco no Prisma Studio
-npx prisma studio
-
-# Reset do banco (apaga todos os dados)
-npx prisma db push --force-reset
-
-# Gerar novamente o cliente após mudanças no schema
-npx prisma generate
+### Tabela Users
+```sql
+- id: String (CUID, Primary Key)
+- email: String (Unique)
+- name: String (Optional)
+- createdAt: DateTime
+- updatedAt: DateTime
 ```
 
-## 🎯 Páginas Principais
+### Tabela Notifications
+```sql
+- id: String (CUID, Primary Key)
+- title: String
+- message: String
+- type: NotificationType (MENTION, PLAN_EXPIRY, SUPPORT, SYSTEM)
+- isRead: Boolean (Default: false)
+- userId: String (Foreign Key)
+- scheduledAt: DateTime (Optional - para agendamento)
+- createdAt: DateTime
+- updatedAt: DateTime
+```
 
-- **`/notifications`**: Lista e gerencia todas as notificações
-- **`/simulation`**: Ferramenta para criar e testar notificações
+## 🔗 API Endpoints
+
+### Notificações
+- `GET /api/notifications` - Listar notificações com paginação e filtros
+- `POST /api/notifications` - Criar nova notificação (individual ou em massa)
+- `PATCH /api/notifications/[id]/read` - Marcar notificação específica como lida
+- `PATCH /api/notifications/bulk-read` - Marcar todas as notificações como lidas
+
+### Usuários
+- `GET /api/users` - Listar todos os usuários
+
+## 🎯 Páginas da Aplicação
+
+### `/notifications` - Dashboard Principal
+- Lista todas as notificações do usuário
+- Filtros por status (todas, não lidas, lidas)
+- Paginação responsiva
+- Funcionalidade de marcar como lida
+- Interface otimizada para desktop e mobile
+
+### `/simulation` - Simulador de Notificações
+- Formulário para criar notificações de teste
+- Seleção de tipo de notificação
+- Escolha entre usuário específico ou todos
+- Opção de agendamento
+- Feedback em tempo real
 
 ## 📦 Scripts Disponíveis
 
-- `pnpm dev`: Roda o servidor de desenvolvimento
-- `pnpm build`: Gera build de produção
-- `pnpm start`: Roda o servidor de produção
-- `pnpm lint`: Executa o linter
-- `pnpm format`: Formata o código com Prettier
+```bash
+# Desenvolvimento
+pnpm dev              # Servidor de desenvolvimento com Turbopack
+pnpm build            # Build de produção com Turbopack
+pnpm start            # Servidor de produção
+pnpm lint             # Executar ESLint
+pnpm format           # Formatar código com Prettier
+pnpm format:check     # Verificar formatação
 
-## 👥 Dados de Teste
+# Banco de Dados
+npx prisma studio     # Interface visual do banco
+npx prisma generate   # Gerar cliente Prisma
+npx prisma db push    # Aplicar mudanças no schema
+npx prisma db push --force-reset  # Reset completo do banco
+npx tsx prisma/seed.ts  # Popular banco com dados de teste
+```
 
-Após rodar o seed, você terá:
-- 5 usuários de exemplo (incluindo `liderhubadmin@email.com`)
-- 70+ notificações de diferentes tipos
-- Dados realistas gerados com Faker.js
+## 👥 Dados de Exemplo
 
-## 🔧 Desenvolvimento
+Após executar o seed, você terá:
+- **3 usuários** de exemplo (incluindo `liderhubadmin@email.com`)
+- **9+ notificações** de diferentes tipos e status
+- **Dados realistas** gerados com Faker.js
+- **Notificações agendadas** para testar o sistema de scheduling
 
-Para contribuir com o projeto:
+## 🔧 Desenvolvimento e Contribuição
 
-1. Faça um fork do repositório
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
+### Setup de Desenvolvimento
+1. Fork o repositório
+2. Clone sua fork localmente
+3. Instale as dependências com `pnpm install`
+4. Configure o banco com `npx prisma db push`
+5. Popule com dados de teste: `node prisma/seed.ts`
+6. Execute o projeto: `pnpm dev`
 
----
 
-Desenvolvido com ❤️ para o LiderHub
+### Build de Produção
+```bash
+pnpm build
+pnpm start
+```
+
+**Desenvolvido com ❤️ para o LiderHub**
+
+*Sistema de Notificações v1.0 - Agentes de IA totalmente humanizados*
